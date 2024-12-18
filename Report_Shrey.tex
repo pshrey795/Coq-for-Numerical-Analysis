@@ -1,0 +1,259 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[left=0.7in, right=0.7in, top=1in, bottom=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{matlab-prettifier}
+\usepackage{hyperref}
+\usepackage{cancel}
+
+\usepackage{xcolor}
+\usepackage{listings}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{ltblue}{rgb}{0,0.4,0.4}
+\definecolor{dkviolet}{rgb}{0.3,0,0.5}
+
+
+
+\lstdefinelanguage{Coq}{ 
+    % Anything betweeen $ becomes LaTeX math mode
+    mathescape=true,
+    % Comments may or not include Latex commands
+    texcl=false, 
+    % Vernacular commands
+    morekeywords=[1]{Section, Module, End, Require, Import, Export,
+        Variable, Variables, Parameter, Parameters, Axiom, Hypothesis,
+        Hypotheses, Notation, Local, Tactic, Reserved, Scope, Open, Close,
+        Bind, Delimit, Definition, Let, Ltac, Fixpoint, CoFixpoint, Add,
+        Morphism, Relation, Implicit, Arguments, Unset, Contextual,
+        Strict, Prenex, Implicits, Inductive, CoInductive, Record,
+        Structure, Canonical, Coercion, Context, Class, Global, Instance,
+        Program, Infix, Theorem, Lemma, Corollary, Proposition, Fact,
+        Remark, Example, Proof, Goal, Save, Qed, Defined, Hint, Resolve,
+        Rewrite, View, Search, Show, Print, Printing, All, Eval, Check,
+        Projections, inside, outside, Def},
+    % Gallina
+    morekeywords=[2]{forall, exists, exists2, fun, fix, cofix, struct,
+        match, with, end, as, in, return, let, if, is, then, else, for, of,
+        nosimpl, when},
+    % Sorts
+    morekeywords=[3]{Type, Prop, Set, true, false, option},
+    % Various tactics, some are std Coq subsumed by ssr, for the manual purpose
+    morekeywords=[4]{pose, set, move, case, elim, apply, clear, hnf,
+        intro, intros, generalize, rename, pattern, after, destruct,
+        induction, using, refine, inversion, injection, rewrite, congr,
+        unlock, compute, ring, field, fourier, replace, fold, unfold,
+        change, cutrewrite, simpl, have, suff, wlog, suffices, without,
+        loss, nat_norm, assert, cut, trivial, revert, bool_congr, nat_congr,
+        symmetry, transitivity, auto, split, left, right, autorewrite},
+    % Terminators
+    morekeywords=[5]{by, done, exact, reflexivity, tauto, romega, omega,
+        assumption, solve, contradiction, discriminate},
+    % Control
+    morekeywords=[6]{do, last, first, try, idtac, repeat},
+    % Comments delimiters, we do turn this off for the manual
+    morecomment=[s]{(*}{*)},
+    % Spaces are not displayed as a special character
+    showstringspaces=false,
+    % String delimiters
+    morestring=[b]",
+    morestring=[d]’,
+    % Size of tabulations
+    tabsize=3,
+    % Enables ASCII chars 128 to 255
+    extendedchars=false,
+    % Case sensitivity
+    sensitive=true,
+    % Automatic breaking of long lines
+    breaklines=false,
+    % Default style fors listings
+    basicstyle=\small,
+    % Position of captions is bottom
+    captionpos=b,
+    % flexible columns
+    columns=[l]flexible,
+    % Style for (listings') identifiers
+    identifierstyle={\ttfamily\color{black}},
+    % Style for declaration keywords
+    keywordstyle=[1]{\ttfamily\color{dkviolet}},
+    % Style for gallina keywords
+    keywordstyle=[2]{\ttfamily\color{dkgreen}},
+    % Style for sorts keywords
+    keywordstyle=[3]{\ttfamily\color{ltblue}},
+    % Style for tactics keywords
+    keywordstyle=[4]{\ttfamily\color{dkblue}},
+    % Style for terminators keywords
+    keywordstyle=[5]{\ttfamily\color{dkred}},
+    %Style for iterators
+    %keywordstyle=[6]{\ttfamily\color{dkpink}},
+    % Style for strings
+    stringstyle=\ttfamily,
+    % Style for comments
+    commentstyle={\ttfamily\color{dkgreen}},
+    %moredelim=**[is][\ttfamily\color{red}]{/&}{&/},
+    literate=
+    {\\forall}{{\color{dkgreen}{$\forall\;$}}}1
+    {\\exists}{{$\exists\;$}}1
+    {<-}{{$\leftarrow\;$}}1
+    {=>}{{$\Rightarrow\;$}}1
+    {==}{{\code{==}\;}}1
+    {==>}{{\code{==>}\;}}1
+    %    {:>}{{\code{:>}\;}}1
+    {->}{{$\rightarrow\;$}}1
+    {<->}{{$\leftrightarrow\;$}}1
+    {<==}{{$\leq\;$}}1
+    {\#}{{$^\star$}}1 
+    {\\o}{{$\circ\;$}}1 
+    {\@}{{$\cdot$}}1 
+    {\/\\}{{$\wedge\;$}}1
+    {\\\/}{{$\vee\;$}}1
+    {++}{{\code{++}}}1
+    {~}{{$\sim$}}1
+    {\@\@}{{$@$}}1
+    {\\mapsto}{{$\mapsto\;$}}1
+    {\\hline}{{\rule{\linewidth}{0.5pt}}}1
+    %
+}[keywords,comments,strings]
+
+\hypersetup{      
+    urlcolor=magenta,
+    pdftitle={Final},
+    pdfpagemode=FullScreen,
+}
+
+\title{CMSC631: Project Report}
+\author{Shrey Patel, UID: 120210242}
+\date{December 2024}
+
+\begin{document}
+
+\maketitle
+
+\section*{Project Overview: Coq for Numerical Analysis}
+\textbf{Goal:} To study how Coq can be used for formal verification of numerical algorithms for solving differential equations.
+
+\section*{Accomplished Goals}
+\begin{itemize}
+    \item Survey and understanding of real analysis libraries: 
+    \begin{enumerate}
+        \item \textbf{Coq STL:} 
+        \begin{itemize}
+            \item Set of real numbers \texttt{R}
+            \item Operators \texttt{+, *} with identities \texttt{R0, R1}
+            \item Axioms on real numbers: \texttt{total\_order, completeness}, etc.
+            \item Lemmas for operators, orders, transcendental functions on reals (e.g. trigonometric, exponential, etc.)
+        \end{itemize}
+        \item \textbf{Coquelicot[2]:}
+        \begin{itemize}
+            \item Extension of Coq STL to support differential and integral calculus
+            \item Subsets defined as predicates on sets: \texttt{T -> Prop}
+            \item Neighbourhoods defined as filters: \texttt{(T -> Prop) -> Prop}
+            \item Limits defined as maps between neighbourhoods: \\\texttt{(T -> U) -> ((T -> Prop) -> Prop) -> ((U -> Prop) -> Prop)}
+            \item Derivatives as maps between functions: \texttt{(T -> U) -> ((T -> Prop) -> Prop) -> (T -> U) -> Prop}
+            \item Lemmas for derivatives, integrals, Taylor Series, etc. 
+        \end{itemize}
+    \end{enumerate} 
+    \item Defined and proved various helper lemmas on real numbers (in code file \texttt{Base.v}): 
+    \begin{lstlisting}[language=Coq]
+        Lemma Rplus_lt_r : forall r r' : R, (0 < r') -> (r < r + r').
+        Lemma Rplus_le_r : forall r r' : R, (0 <= r') -> (r <= r + r').
+        Lemma Rabs_scalar : forall x y : R, (0 < x) -> (Rabs (x * y) = x * Rabs y).
+    \end{lstlisting}
+    \item Defined an ordinary differential equation for exponential decay (in code file \texttt{ODE.v}):
+    \begin{itemize}
+        \item \textbf{Differential Equation:} $\frac{dy}{dt} = -\lambda y, \;\; y(t_0) = y_0$ 
+        \item \textbf{Coq definition:} As a relation of type \texttt{R -> (R -> R) -> Prop}:
+        \begin{lstlisting}[language=Coq]
+            Definition is_differentiable (f: R -> R): Prop :=
+            forall (x: R) (n: nat),  
+            ex_derive_n f n x.
+
+            Definition exp_ode (lambda : R) (y : R -> R) := 
+            (is_differentiable y) /\ 
+            (forall t : R, Derive_n y 1 t = - (lambda * (y t))).
+        \end{lstlisting}
+        \item Defined and proved a lemma for double derivative: 
+        \begin{lstlisting}[language=Coq]
+            Lemma double_deriv : forall lambda zeta : R, forall y : R -> R,
+            (forall t : R, Derive_n y 1 t = - (lambda * y t)) -> 
+            Derive_n y 2 zeta = lambda * lambda * y zeta.
+        \end{lstlisting}
+    \end{itemize}
+    \newpage
+    \item Implemented a numerical algorithm for solving the above differential equation (in code file \texttt{NumericalMethod.v}):
+    \begin{itemize}
+        \item \textbf{Forward Euler:} $y_{n+1} = (1 - \lambda \; \Delta t) y_n$
+        \item \textbf{Coq definition}: 
+        \begin{lstlisting}[language=Coq]
+            Definition euler_step (dt : R) (lambda : R) (yn : R) : R := (yn * (1 - dt * lambda)). 
+
+            Fixpoint euler (y0 : R) (lambda : R) (dt : R) (n : nat) : R := 
+            match n with
+            | 0%nat => y0 
+            | S n'  => euler_step dt lambda (euler y0 lambda dt n') 
+            end.
+        \end{lstlisting}
+    \end{itemize} 
+    \item Proved a theorem on local error bound (in code file \texttt{LocalError.v})
+    \begin{itemize}
+        \item \textbf{Theorem:} Let the exact solution be $y$ and the numerical solution be $\hat{y}$. Then, assuming that at time $t_n$, both the exact and the numerical solution agree (i.e. $y(t_n) = \hat{y}_n$), the error introduced by the numerical solution in one time step after $t_n$ is bounded by the factor $\left|\left|\frac{y_0 (\lambda \Delta t)^2}{2}\right|\right|$, where $y_0$ is the initial value of $y$, i.e. $y_0 = y(t_0)$. In short, $|y(t_n + \Delta t) - \hat{y}_{n+1}| \leq \left|\left|\frac{y_0 (\lambda \Delta t)^2}{2}\right|\right|$
+        \item \textbf{Coq definition: } 
+        \begin{lstlisting}[language=Coq]
+            Theorem local_error_bounded : 
+            forall y : R -> R, 
+            forall lambda t0 tn dt : R,
+            0 < lambda ->
+            0 < dt -> 
+            t0 <= tn -> 
+            0 < (lambda * dt) < 1 -> 
+            exp_ode lambda y -> 
+            (Rabs ((y (tn + dt)) - (euler_step dt lambda (y tn)))) 
+            <= ((lambda * dt)^2 * (Rabs (y t0))) / INR 2.
+        \end{lstlisting}
+    \end{itemize}
+    \item Proved a theorem on global error bound (in code file \texttt{GlobalError.v})
+    \begin{itemize}
+        \item \textbf{Theorem:} Let the exact solution be $y$ and the numerical solution be $\hat{y}$. Then, after starting from the same initial state $y_0$ at time $t_0$, the error after $n$ time steps (i.e. at time $t_n = t_0 + n \; \Delta t$) is bounded by the factor $\left|\left|\frac{n y_0 (\lambda \Delta t)^2}{2}\right|\right|$, meaning that the error grows linearly in worst case for the chosen numerical algorithm. In short, $|y(t_0 + n \; \Delta t) - \hat{y}_{n}| \leq \left|\left|\frac{n y_0 (\lambda \Delta t)^2}{2}\right|\right|$
+        \item \textbf{Coq definition:}
+        \begin{lstlisting}[language=Coq]
+            Theorem global_error_bounded :
+            forall y : R -> R,
+            forall lambda t0 dt : R,
+            0 < lambda -> 
+            0 < dt ->  
+            0 < (lambda * dt) < 1 -> 
+            exp_ode lambda y ->
+            forall n : nat,
+            (Rabs ((y (t0 + (INR n) * dt)) - (euler (y t0) lambda dt n))) 
+            <= INR n * (((lambda * dt)^2 * (Rabs (y t0))) / INR 2).
+        \end{lstlisting}
+    \end{itemize}
+\end{itemize}
+
+\newpage
+\section*{Unaccomplished Goal:}
+The proof for local error uses a lemma (defined in code file \texttt{ODE.v}) that any function of type \texttt{R -> R} which satisfies the differential equation \texttt{exp\_ode} defined above for a given value of $\lambda$ and initial value $y_0$ must be of the form \texttt{exp\_ode\_exact} defined below: 
+\begin{lstlisting}[language=Coq]
+    Definition exp_ode_exact (lambda y0 : R) := fun (t : R) => (y0 * (exp (- (lambda * t)))).
+
+    (* Theorem to prove that the exact solution is the only solution of the given ODE *)
+    Theorem exp_eqv : forall lambda t0 : R, forall y : R -> R,
+    exp_ode lambda y -> y = exp_ode_exact lambda (y t0). 
+\end{lstlisting}
+This lemma is crucial for expressing the local and global error bounds in terms of the initial value of the function $y_0$. It is analytically provable using integration. Integration in Coquelicot library is implemented using Reimann sums, which I have not been able to understand properly, so I have not been able to complete the proof of this lemma. 
+
+\section*{References}
+\begin{enumerate}
+    \item Sylvie Boldo, Catherine Lelay, Guillaume Melquiond. Improving Real Analysis in Coq: A User-Friendly Approach to Integrals and Derivatives. 2012.
+    \item Sylvie Boldo, Catherine Lelay, Guillaume Melquiond. Coquelicot: A user-friendly library of real analysis for Coq. 2014.
+    \item Ariel Kellison and Andrew Appel. Verified Numerical Methods for Ordinary Differential Equations. 2022.
+\end{enumerate}
+
+\end{document}
